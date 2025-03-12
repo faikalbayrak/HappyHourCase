@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 [Serializable]
 internal class ToolbarSceneSelection : BaseToolbarElement
 {
-    private static readonly string[] SceneNameArray = { "MainScene", "GameScene", "StartServerScene"};
+    private static readonly string[] SceneNameArray = { "BaseScene","SplashScene","MainScene","GameScene"};
     private bool showSceneFolder;
     private Scene activeScene;
     private GUIContent content;
