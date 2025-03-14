@@ -1,21 +1,46 @@
+using Interfaces;
 using UnityEngine;
+using VContainer;
 
 namespace Player
 {
     public class PlayerMovementModule : MonoBehaviour
     {
-        [SerializeField] private FloatingJoystick _joystick;
         [SerializeField] private float _moveSpeed = 5f;
         [SerializeField] private float _rotationSpeed = 10f;
-        [SerializeField] private Transform _cameraFollow;
-
+        
+        private Transform _cameraFollow;
+        private FloatingJoystick _joystick;
+        private IObjectResolver _objectResolver;
         private CharacterController _characterController;
+        private IGameManagerService _gameManagerService;
+        
         private bool _isMoving = false;
         private float _smoothVelocity = 0f;
+        private bool depenciesInjected = false;
 
         public bool IsMoving => _isMoving;
-        public float Horizontal => _joystick.Horizontal;
-        public float Vertical => _joystick.Vertical;
+
+        public float Horizontal
+        {
+            get
+            {
+                if (_joystick != null)
+                    return _joystick.Horizontal;
+
+                return 0;
+            }
+        }
+        public float Vertical
+        {
+            get
+            {
+                if (_joystick != null)
+                    return _joystick.Vertical;
+
+                return 0;
+            }
+        }
 
         private void Awake()
         {
@@ -24,6 +49,9 @@ namespace Player
 
         private void Update()
         {
+            if (!depenciesInjected)
+                return;
+            
             MovePlayer();
             RotatePlayer();
             UpdateCameraZPosition();
@@ -61,6 +89,26 @@ namespace Player
             Vector3 newPosition = _cameraFollow.position;
             newPosition.z = newZ;
             _cameraFollow.position = newPosition;
+        }
+
+        public void SetObjectResolver(IObjectResolver objectResolver)
+        {
+            _objectResolver = objectResolver;
+            
+            if (_objectResolver != null)
+            {
+                _gameManagerService = _objectResolver.Resolve<IGameManagerService>();
+                
+                if (_gameManagerService != null)
+                {
+                    var dep = _gameManagerService.GetPlayerMovementDependencies();
+
+                    _joystick = dep.JoyStick;
+                    _cameraFollow = dep.CameraFollow;
+
+                    depenciesInjected = true;
+                }
+            }
         }
     }
 }

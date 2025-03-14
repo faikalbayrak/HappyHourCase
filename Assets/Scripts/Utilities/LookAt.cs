@@ -4,7 +4,7 @@ namespace Utilities
 {
     public class LookAt : MonoBehaviour
     {
-        [SerializeField] private Transform _lookAt;
+        public Transform LookAtTransform;
 
         [Header("Disable Rotation Axes")]
         public bool disableX = false;
@@ -13,9 +13,9 @@ namespace Utilities
 
         private void LateUpdate()
         {
-            if (_lookAt != null)
+            if (LookAtTransform != null)
             {
-                Vector3 direction = _lookAt.position - transform.position;
+                Vector3 direction = LookAtTransform.position - transform.position;
                 
                 if (disableX) direction.x = 0;
                 if (disableY) direction.y = 0;
