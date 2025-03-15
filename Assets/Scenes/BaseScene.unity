@@ -340,7 +340,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4513e74c945045646821c5b23c58e8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pools: []
+  pools:
+  - tag: Enemy
+    prefab: {fileID: 806711689710578422, guid: cc8ea9dbf8c1d374cb226b69e42d662e, type: 3}
+    size: 10
+  - tag: Arrow
+    prefab: {fileID: 7126004011075626029, guid: 3573006aa3fb6fe45a9a8ff0990ffa30,
+      type: 3}
+    size: 30
 --- !u!1 &1689922279
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,7 +382,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   sceneLoadManager: {fileID: 350564709}
-  objectPoolManager: {fileID: 0}
+  objectPoolManager: {fileID: 1401807291}
 --- !u!4 &1689922281
 Transform:
   m_ObjectHideFlags: 0

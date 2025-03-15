@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using GameCore.Enemy;
+using GameCore.Projectiles;
 using Interfaces;
 using UnityEngine;
+using VContainer;
 
 namespace Managers
 {
@@ -16,6 +19,13 @@ namespace Managers
 
         public List<Pool> pools;
         private Dictionary<string, Queue<GameObject>> _poolDictionary;
+        private IObjectResolver _objectResolver;
+
+        [Inject]
+        public void Init(IObjectResolver objectResolver)
+        {
+            _objectResolver = objectResolver;
+        }
 
         private void Awake()
         {
@@ -28,6 +38,17 @@ namespace Managers
                 for (int i = 0; i < pool.size; i++)
                 {
                     GameObject obj = Instantiate(pool.prefab);
+                    
+                    if (obj.TryGetComponent<Arrow>(out var arrow))
+                    {
+                        arrow.SetObjectResolver(_objectResolver);
+                    }
+                    
+                    if (obj.TryGetComponent<EnemyController>(out var enemy))
+                    {
+                        enemy.SetObjectResolver(_objectResolver);
+                    }
+                    
                     obj.SetActive(false);
                     objectPool.Enqueue(obj);
                 }

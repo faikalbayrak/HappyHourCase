@@ -21,12 +21,14 @@ public class GameManager : MonoBehaviour, IGameManagerService
 
     private List<GameObject> _createdEnemies = new List<GameObject>(); // Düşman listesini başlat
     private IObjectResolver _objectResolver;
+    private IObjectPoolService _objectPoolService;
     public List<GameObject> CreatedEnemies => _createdEnemies;
 
     [Inject]
-    public void Init(IObjectResolver objectResolver)
+    public void Init(IObjectResolver objectResolver, IObjectPoolService objectPoolService)
     {
         _objectResolver = objectResolver;
+        _objectPoolService = objectPoolService;
 
         SpawnPlayer();
         SpawnEnemy();
@@ -50,8 +52,11 @@ public class GameManager : MonoBehaviour, IGameManagerService
 
         foreach (var spawnPoint in selectedSpawnPoints)
         {
-            var enemy = Instantiate(_enemyPrefab, spawnPoint.position, spawnPoint.rotation);
-            _createdEnemies.Add(enemy);
+            GameObject enemy = _objectPoolService.SpawnFromPool("Enemy", spawnPoint.position, spawnPoint.rotation);
+            if (enemy != null)
+            {
+                _createdEnemies.Add(enemy);
+            }
         }
     }
 
