@@ -51,6 +51,7 @@ namespace GameCore.Player
             foreach (var enemy in enemies)
             {
                 if (enemy == null) continue;
+                if(!enemy.activeSelf) continue;
 
                 float distance = Vector3.Distance(transform.position, enemy.transform.position);
 

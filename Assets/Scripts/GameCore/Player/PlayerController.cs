@@ -87,5 +87,10 @@ namespace GameCore.Player
         {
             return _temporaryAttackSpeedMultiplier;
         }
+        
+        public void TakeDamage(int damage)
+        {
+            _healthController.TakeDamage(damage);
+        }
     }
 }

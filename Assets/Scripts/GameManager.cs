@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour, IGameManagerService
     [SerializeField] private Transform _cameraFollow;
     [SerializeField] private Transform _virtualCameraPos;
 
-    private List<GameObject> _createdEnemies = new List<GameObject>(); // Düşman listesini başlat
+    private List<GameObject> _createdEnemies = new List<GameObject>();
     private IObjectResolver _objectResolver;
     private IObjectPoolService _objectPoolService;
     public List<GameObject> CreatedEnemies => _createdEnemies;
@@ -29,9 +29,11 @@ public class GameManager : MonoBehaviour, IGameManagerService
     {
         _objectResolver = objectResolver;
         _objectPoolService = objectPoolService;
-
+        
+        _objectPoolService.SetGameManager(this);
+        
         SpawnPlayer();
-        SpawnEnemy();
+        SpawnEnemy(5);
     }
 
     private void SpawnPlayer()
@@ -40,7 +42,7 @@ public class GameManager : MonoBehaviour, IGameManagerService
         player.GetComponent<PlayerController>().SetObjectResolver(_objectResolver);
     }
 
-    private void SpawnEnemy()
+    public void SpawnEnemy(int count)
     {
         if (_enemySpawnPoints == null || _enemySpawnPoints.Count == 0)
         {
@@ -48,14 +50,15 @@ public class GameManager : MonoBehaviour, IGameManagerService
             return;
         }
         
-        List<Transform> selectedSpawnPoints = GetRandomSpawnPoints(3);
+        List<Transform> selectedSpawnPoints = GetRandomSpawnPoints(count);
 
         foreach (var spawnPoint in selectedSpawnPoints)
         {
             GameObject enemy = _objectPoolService.SpawnFromPool("Enemy", spawnPoint.position, spawnPoint.rotation);
             if (enemy != null)
             {
-                _createdEnemies.Add(enemy);
+                if(!_createdEnemies.Contains(enemy))
+                    _createdEnemies.Add(enemy);
             }
         }
     }
@@ -63,25 +66,42 @@ public class GameManager : MonoBehaviour, IGameManagerService
     private List<Transform> GetRandomSpawnPoints(int count)
     {
         List<Transform> selectedPoints = new List<Transform>();
-
-        if (_enemySpawnPoints.Count <= count)
+        
+        HashSet<Vector3> occupiedPositions = new HashSet<Vector3>();
+        foreach (var enemy in _createdEnemies)
         {
-            selectedPoints.AddRange(_enemySpawnPoints);
-        }
-        else
-        {
-            List<Transform> availablePoints = new List<Transform>(_enemySpawnPoints);
-
-            for (int i = 0; i < count; i++)
+            if (enemy.activeInHierarchy)
             {
-                int randomIndex = UnityEngine.Random.Range(0, availablePoints.Count);
-                selectedPoints.Add(availablePoints[randomIndex]);
-                availablePoints.RemoveAt(randomIndex);
+                occupiedPositions.Add(enemy.transform.position);
             }
+        }
+        
+        List<Transform> availablePoints = new List<Transform>();
+        foreach (var spawnPoint in _enemySpawnPoints)
+        {
+            if (!occupiedPositions.Contains(spawnPoint.position))
+            {
+                availablePoints.Add(spawnPoint);
+            }
+        }
+
+        if (availablePoints.Count == 0)
+        {
+            Debug.LogWarning("No available spawn points!");
+            return selectedPoints;
+        }
+        
+        int maxSelection = Mathf.Min(count, availablePoints.Count);
+        for (int i = 0; i < maxSelection; i++)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, availablePoints.Count);
+            selectedPoints.Add(availablePoints[randomIndex]);
+            availablePoints.RemoveAt(randomIndex);
         }
 
         return selectedPoints;
     }
+
 
     public PlayerMovementDependencies GetPlayerMovementDependencies()
     {

@@ -380,7 +380,8 @@ MonoBehaviour:
   parentReference:
     TypeName: 
   autoRun: 1
-  autoInjectGameObjects: []
+  autoInjectGameObjects:
+  - {fileID: 1170739496}
   sceneLoadManager: {fileID: 350564709}
   objectPoolManager: {fileID: 1401807291}
 --- !u!4 &1689922281

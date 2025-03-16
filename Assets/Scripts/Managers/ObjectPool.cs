@@ -20,11 +20,17 @@ namespace Managers
         public List<Pool> pools;
         private Dictionary<string, Queue<GameObject>> _poolDictionary;
         private IObjectResolver _objectResolver;
+        private IGameManagerService _gameManagerService;
 
         [Inject]
         public void Init(IObjectResolver objectResolver)
         {
             _objectResolver = objectResolver;
+        }
+
+        public void SetGameManager(IGameManagerService gameManagerService)
+        {
+            _gameManagerService = gameManagerService;
         }
 
         private void Awake()
@@ -95,6 +101,14 @@ namespace Managers
         
             objectToReturn.SetActive(false);
             _poolDictionary[tag].Enqueue(objectToReturn);
+
+            if (tag == "Enemy")
+            {
+                if (_gameManagerService != null)
+                {
+                    _gameManagerService.SpawnEnemy(1);
+                }
+            }
         }
     
         private GameObject GetPrefabByTag(string tag)

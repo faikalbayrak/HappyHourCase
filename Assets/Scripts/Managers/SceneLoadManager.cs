@@ -22,6 +22,7 @@ namespace Managers
         [SerializeField] private GameObject splashScreenObject;
         
         public SceneInstance LastScfeneInstance => _sceneStack.Peek();
+        public event Action OnGameSceneLoaded;
         private Stack<SceneInstance> _sceneStack = new Stack<SceneInstance>();
         
         private DateTime _splashScreenOpenedTime;
@@ -59,7 +60,12 @@ namespace Managers
             
             await UnloadLast();
             var gameLoader = Addressables.LoadSceneAsync(gameScene, LoadSceneMode.Additive);
+            
             _sceneStack.Push(await gameLoader);
+
+            await Task.Delay(2000);
+            
+            OnGameSceneLoaded?.Invoke();
         }
         
         private async UniTask LoadSplashScene()

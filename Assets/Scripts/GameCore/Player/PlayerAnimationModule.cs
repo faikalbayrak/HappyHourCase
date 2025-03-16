@@ -1,4 +1,5 @@
 using System;
+using GameCore.Projectiles;
 using Interfaces;
 using Player;
 using UnityEngine;
@@ -9,9 +10,11 @@ namespace GameCore.Player
     public class PlayerAnimationModule : MonoBehaviour
     {
         [SerializeField] private Animator _animator;
-
+        [SerializeField] private Transform _arrowFirePos;
+        
         private IObjectResolver _objectResolver;
         private IGameManagerService _gameManagerService;
+        private IObjectPoolService _objectPool;
         private bool _dependenciesInjected = false;
         
         private PlayerController _playerController;
@@ -54,6 +57,7 @@ namespace GameCore.Player
             if (_objectResolver != null)
             {
                 _gameManagerService = _objectResolver.Resolve<IGameManagerService>();
+                _objectPool = _objectResolver.Resolve<IObjectPoolService>();
                 
                 if (_gameManagerService != null)
                 {
@@ -147,7 +151,21 @@ namespace GameCore.Player
         
         public void AttackEvent()
         {
-            Debug.LogError("Attack");
+            if (_playerTargetingModule.CurrentTarget == null)
+            {
+                Debug.LogWarning("No target to attack.");
+                return;
+            }
+            
+            GameObject arrow = _objectPool.SpawnFromPool("Arrow", _arrowFirePos.position, _arrowFirePos.rotation);
+            if (arrow != null)
+            {
+                Arrow arrowScript = arrow.GetComponent<Arrow>();
+                if (arrowScript != null)
+                {
+                    arrowScript.Launch(_playerTargetingModule.CurrentTarget.position + new Vector3(0,0.5f,0));
+                }
+            }
         }
     }
 }

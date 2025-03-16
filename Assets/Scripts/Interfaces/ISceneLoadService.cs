@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 
 namespace Interfaces
@@ -10,6 +11,7 @@ namespace Interfaces
             MainScene,
             GameScene
         }
+        public event Action OnGameSceneLoaded;
         public UniTask Load(SceneName sceneName);
         
         public UniTask Load(string sceneName, bool unloadLast = false);
