@@ -170,6 +170,27 @@ public class GameManager : MonoBehaviour, IGameManagerService
 
         _skillManager.ToggleSkill(skill);
     }
+
+    public Transform GetNearestEnemy(Transform self)
+    {
+        Transform nearestEnemy = null;
+        float minDistance = float.MaxValue;
+
+        foreach (var enemy in _createdEnemies)
+        {
+            if (!enemy.activeInHierarchy || enemy.transform == self) 
+                continue;
+
+            float distance = Vector3.Distance(self.position, enemy.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestEnemy = enemy.transform;
+            }
+        }
+
+        return nearestEnemy;
+    }
 }
 
 public class PlayerMovementDependencies

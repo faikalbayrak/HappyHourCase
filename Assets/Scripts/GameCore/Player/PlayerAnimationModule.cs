@@ -186,6 +186,8 @@ namespace GameCore.Player
             if (arrow != null && _playerTargetingModule.CurrentTarget.gameObject.activeSelf)
             {
                 Arrow arrowScript = arrow.GetComponent<Arrow>();
+                arrowScript.IsBurned = _playerController.IsBurnDamageActivated;
+                arrowScript.IsBounced = _playerController.IsBounceArrowActivated;
                 arrowScript.Launch(_playerTargetingModule.CurrentTarget.position + new Vector3(0, 0.5f, 0));
             }
         }

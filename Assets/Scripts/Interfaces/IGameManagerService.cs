@@ -10,5 +10,6 @@ namespace Interfaces
         public Transform GetVirtualCamPos();
         public void ExecuteCinemachineImpulse();
         public List<GameObject> CreatedEnemies { get; }
+        public Transform GetNearestEnemy(Transform self);
     }
 }

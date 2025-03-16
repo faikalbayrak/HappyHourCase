@@ -16,12 +16,26 @@ namespace GameCore.Projectiles
         private IObjectPoolService _objectPoolService;
         private Rigidbody _rigidbody;
         private bool _dependenciesInjected = false;
-
+        
+        private bool _isLaunched = false;
+        private bool _isBurned = false;
+        private bool _isBounced = false;
+        
         public float launchForce = 20f;
         public float gravityScale = 1f;
         public int damage = 10;
 
-        private bool _isLaunched = false;
+        public bool IsBurned
+        {
+            get => _isBurned;
+            set => _isBurned = value;
+        }
+        
+        public bool IsBounced
+        {
+            get => _isBounced;
+            set => _isBounced = value;
+        }
 
         private void Awake()
         {
@@ -52,8 +66,8 @@ namespace GameCore.Projectiles
         public void OnObjectSpawn()
         {
             _isLaunched = false;
-            _rigidbody.velocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
+            // _rigidbody.velocity = Vector3.zero;
+            // _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.useGravity = false;
         }
 
@@ -70,7 +84,7 @@ namespace GameCore.Projectiles
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player") || other.CompareTag("Projectile"))
+            if (other.CompareTag("Player") || other.CompareTag("Projectile") || other.CompareTag("Wall"))
                 return;
 
             HitEffect();
@@ -79,6 +93,11 @@ namespace GameCore.Projectiles
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
+                enemy.IsEnabledDot = _isBurned;
+                if (_isBounced)
+                {
+                    enemy.BounceArrow();
+                }
             }
 
             ReturnToPool();
@@ -87,6 +106,8 @@ namespace GameCore.Projectiles
         private void ReturnToPool()
         {
             _isLaunched = false;
+            _isBurned = false;
+            _isBounced = false;
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.useGravity = false;

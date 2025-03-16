@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using GameCore.Player;
+using GameCore.Projectiles;
 using Interfaces;
 using Player;
 using UnityEngine;
@@ -11,6 +13,9 @@ namespace GameCore.Enemy
     public class EnemyController : MonoBehaviour, IPooledObject, IHealthObserver
     {
         [SerializeField] private int _maxHealth = 100;
+        [SerializeField] private ParticleSystem burnDamageVfx;
+        [SerializeField] private Transform bounceArrowPos;
+        [SerializeField] private Transform bounceArrowRootObject;
         
         private HealthController _healthController;
         private HealthBarUI _healthBarUI;
@@ -20,7 +25,21 @@ namespace GameCore.Enemy
         private IGameManagerService _gameManagerService;
         private ISceneLoadService _sceneLoadService;
         private IObjectPoolService _objectPoolService;
+        private Transform nearestEnemy;
+        
         private bool _dependenciesInjected = false;
+        private bool isEnabledDot = false;
+        private float dotDuration = 3f;
+        private float damageInterval = 1f;
+        private float dotTimer = 0f;
+        private float nextDamageTime = 0f;
+        private bool isEnabledDotTemp = false;
+
+        public bool IsEnabledDot
+        {
+            get => isEnabledDot;
+            set => isEnabledDot = value;
+        }
         
         private void Awake()
         {
@@ -35,7 +54,44 @@ namespace GameCore.Enemy
                 _healthController.AddObserver(this);
             }
         }
-        
+
+        private void LateUpdate()
+        {
+            if (isEnabledDot)
+            {
+                burnDamageVfx.Play();
+                isEnabledDotTemp = true;
+                
+                dotTimer += Time.deltaTime;
+                
+                if (dotTimer >= nextDamageTime)
+                {
+                    TakeDamage(15);
+                    nextDamageTime += damageInterval;
+                }
+                
+                if (dotTimer >= dotDuration)
+                {
+                    isEnabledDot = false;
+                    dotTimer = 0f;
+                    nextDamageTime = 0f;
+                }
+            }
+            else
+            {
+                if(isEnabledDotTemp)
+                    burnDamageVfx.Stop();
+            }
+
+            if (gameObject.activeSelf)
+            {
+                if (_gameManagerService != null)
+                {
+                    LookAtNearestEnemy();
+                }
+            }
+        }
+
         public void SetObjectResolver(IObjectResolver objectResolver)
         {
             _objectResolver = objectResolver;
@@ -61,7 +117,12 @@ namespace GameCore.Enemy
 
         public void OnObjectSpawn()
         {
-            
+            _healthController.Heal(100);
+            isEnabledDot = false;
+            isEnabledDotTemp = false;
+            dotTimer = 0f;
+            nextDamageTime = 0f;
+            burnDamageVfx.Stop();
         }
 
         private void ReturnToPool()
@@ -70,7 +131,7 @@ namespace GameCore.Enemy
             {
                 Explosion();
                 _objectPoolService.ReturnToPool("Enemy", gameObject);
-                _healthController.Heal(100);
+                
                 Debug.Log("Enemy returned to pool.");
             }
             else
@@ -95,6 +156,18 @@ namespace GameCore.Enemy
             ReturnToPool();
         }
 
+        private void LookAtNearestEnemy()
+        {
+            nearestEnemy = _gameManagerService.GetNearestEnemy(transform);
+            if (nearestEnemy != null)
+            {
+                Vector3 direction = nearestEnemy.position - bounceArrowRootObject.position;
+                direction.y = 0;
+                bounceArrowRootObject.rotation = Quaternion.LookRotation(direction);
+                bounceArrowRootObject.GetChild(0).rotation = Quaternion.LookRotation(direction);
+            }
+        }
+
         private async void Explosion()
         {
             GameObject explosiveVfx = _objectPoolService.SpawnFromPool("Explosive", transform.position + new Vector3(0,0.5f,0), Quaternion.identity);
@@ -111,5 +184,21 @@ namespace GameCore.Enemy
             
             _objectPoolService.ReturnToPool("Explosive",explosiveVfx);
         }
+        
+        public void BounceArrow()
+        {
+            GameObject arrow = _objectPoolService.SpawnFromPool("Arrow", bounceArrowPos.position, bounceArrowPos.rotation);
+    
+            if (nearestEnemy != null && nearestEnemy.gameObject.activeSelf)
+            {
+                if (arrow != null)
+                {
+                    Arrow arrowScript = arrow.GetComponent<Arrow>();
+                    //arrowScript.IsBurned = _playerController.IsBurnDamageActivated;
+                    arrowScript.Launch(nearestEnemy.position + new Vector3(0, 0.5f, 0));
+                }
+            }
+        }
+
     }
 }
