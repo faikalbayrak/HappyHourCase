@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Threading.Tasks;
 using GameCore.Enemy;
 using UnityEngine;
 using Interfaces;
@@ -10,7 +13,7 @@ namespace GameCore.Projectiles
     {
         private IObjectResolver _objectResolver;
         private IGameManagerService _gameManagerService;
-        private IObjectPoolService _objectPool;
+        private IObjectPoolService _objectPoolService;
         private Rigidbody _rigidbody;
         private bool _dependenciesInjected = false;
 
@@ -40,7 +43,7 @@ namespace GameCore.Projectiles
 
             if (_objectResolver != null)
             {
-                _objectPool = _objectResolver.Resolve<IObjectPoolService>();
+                _objectPoolService = _objectResolver.Resolve<IObjectPoolService>();
                 
                 _dependenciesInjected = true;
             }
@@ -70,6 +73,8 @@ namespace GameCore.Projectiles
             if (other.CompareTag("Player"))
                 return;
 
+            HitEffect();
+            
             EnemyController enemy = other.transform.parent.GetComponent<EnemyController>();
             if (enemy != null)
             {
@@ -86,15 +91,32 @@ namespace GameCore.Projectiles
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.useGravity = false;
 
-            if (_objectPool != null)
+            if (_objectPoolService != null)
             {
-                _objectPool.ReturnToPool("Arrow", gameObject);
+                _objectPoolService.ReturnToPool("Arrow", gameObject);
                 Debug.Log("Arrow returned to pool.");
             }
             else
             {
                 Debug.LogWarning("ObjectPoolService is not assigned.");
             }
+        }
+
+        private void HitEffect()
+        {
+            GameObject hitVfx = _objectPoolService.SpawnFromPool("Hit", transform.position, Quaternion.identity);
+            hitVfx.GetComponent<ParticleSystem>().Play();
+            hitVfx.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+            hitVfx.transform.GetChild(1).GetComponent<ParticleSystem>().Play();
+            hitVfx.transform.GetChild(2).GetComponent<ParticleSystem>().Play();
+            
+            ReturnToPoolWithDelay(hitVfx);
+        }
+
+        private async void ReturnToPoolWithDelay(GameObject prefab)
+        {
+            await Task.Delay(new TimeSpan(0,0,0,0,150));
+            _objectPoolService.ReturnToPool("Hit",prefab);
         }
     }
 }

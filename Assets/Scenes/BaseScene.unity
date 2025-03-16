@@ -347,7 +347,14 @@ MonoBehaviour:
   - tag: Arrow
     prefab: {fileID: 7126004011075626029, guid: 3573006aa3fb6fe45a9a8ff0990ffa30,
       type: 3}
-    size: 30
+    size: 10
+  - tag: Explosive
+    prefab: {fileID: 100006, guid: 42f257b24c959a44794a35d032e9da12, type: 3}
+    size: 10
+  - tag: Hit
+    prefab: {fileID: 1758473627833946668, guid: 9b21333b068a5084ba09535839bee3c8,
+      type: 3}
+    size: 10
 --- !u!1 &1689922279
 GameObject:
   m_ObjectHideFlags: 0

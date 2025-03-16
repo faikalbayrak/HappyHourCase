@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
+using GameCore.Enemy;
 using GameCore.Player;
 using Interfaces;
 using Player;
@@ -22,7 +24,13 @@ public class GameManager : MonoBehaviour, IGameManagerService
     private List<GameObject> _createdEnemies = new List<GameObject>();
     private IObjectResolver _objectResolver;
     private IObjectPoolService _objectPoolService;
+    private CinemachineImpulseSource _cinemachineImpulseSource;
     public List<GameObject> CreatedEnemies => _createdEnemies;
+
+    private void Awake()
+    {
+        _cinemachineImpulseSource = _virtualCameraPos.GetComponent<CinemachineImpulseSource>();
+    }
 
     [Inject]
     public void Init(IObjectResolver objectResolver, IObjectPoolService objectPoolService)
@@ -57,6 +65,11 @@ public class GameManager : MonoBehaviour, IGameManagerService
             GameObject enemy = _objectPoolService.SpawnFromPool("Enemy", spawnPoint.position, spawnPoint.rotation);
             if (enemy != null)
             {
+                if (enemy.TryGetComponent<EnemyController>(out var enemyController))
+                {
+                    enemyController.SetIGameManagerService(this);
+                }
+                
                 if(!_createdEnemies.Contains(enemy))
                     _createdEnemies.Add(enemy);
             }
@@ -111,6 +124,11 @@ public class GameManager : MonoBehaviour, IGameManagerService
     public Transform GetVirtualCamPos()
     {
         return _virtualCameraPos;
+    }
+
+    public void ExecuteCinemachineImpulse()
+    {
+        _cinemachineImpulseSource.GenerateImpulse(.25f);
     }
 }
 

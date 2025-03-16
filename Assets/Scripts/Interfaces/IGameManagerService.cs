@@ -8,6 +8,7 @@ namespace Interfaces
         public void SpawnEnemy(int count);
         public PlayerMovementDependencies GetPlayerMovementDependencies();
         public Transform GetVirtualCamPos();
+        public void ExecuteCinemachineImpulse();
         public List<GameObject> CreatedEnemies { get; }
     }
 }

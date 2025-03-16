@@ -19,7 +19,7 @@ namespace GameCore.Enemy
         private IObjectResolver _objectResolver;
         private IGameManagerService _gameManagerService;
         private ISceneLoadService _sceneLoadService;
-        private IObjectPoolService _objectPool;
+        private IObjectPoolService _objectPoolService;
         private bool _dependenciesInjected = false;
         
         private void Awake()
@@ -43,10 +43,15 @@ namespace GameCore.Enemy
             if (_objectResolver != null)
             {
                 _sceneLoadService = _objectResolver.Resolve<ISceneLoadService>();
-                _objectPool = _objectResolver.Resolve<IObjectPoolService>();
+                _objectPoolService = _objectResolver.Resolve<IObjectPoolService>();
                 
                 _sceneLoadService.OnGameSceneLoaded += OnGameSceneLoaded;
             }
+        }
+
+        public void SetIGameManagerService(IGameManagerService gameManagerService)
+        {
+            _gameManagerService = gameManagerService;
         }
 
         private void OnGameSceneLoaded()
@@ -61,9 +66,10 @@ namespace GameCore.Enemy
 
         private void ReturnToPool()
         {
-            if (_objectPool != null)
+            if (_objectPoolService != null)
             {
-                _objectPool.ReturnToPool("Enemy", gameObject);
+                Explosion();
+                _objectPoolService.ReturnToPool("Enemy", gameObject);
                 _healthController.Heal(100);
                 Debug.Log("Enemy returned to pool.");
             }
@@ -87,6 +93,23 @@ namespace GameCore.Enemy
         private void Die()
         {
             ReturnToPool();
+        }
+
+        private async void Explosion()
+        {
+            GameObject explosiveVfx = _objectPoolService.SpawnFromPool("Explosive", transform.position + new Vector3(0,0.5f,0), Quaternion.identity);
+            
+            _gameManagerService.ExecuteCinemachineImpulse();
+            explosiveVfx.GetComponent<ParticleSystem>().Play();
+            explosiveVfx.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+            explosiveVfx.transform.GetChild(1).GetComponent<ParticleSystem>().Play();
+            explosiveVfx.transform.GetChild(2).GetComponent<ParticleSystem>().Play();
+            explosiveVfx.transform.GetChild(3).GetComponent<ParticleSystem>().Play();
+            explosiveVfx.transform.GetChild(4).GetComponent<ParticleSystem>().Play();
+
+            await Task.Delay(2000);
+            
+            _objectPoolService.ReturnToPool("Explosive",explosiveVfx);
         }
     }
 }
