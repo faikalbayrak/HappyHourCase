@@ -5,8 +5,10 @@ using Cinemachine;
 using GameCore.Enemy;
 using GameCore.Player;
 using Interfaces;
+using Managers;
 using Player;
 using UnityEngine;
+using UnityEngine.UI;
 using VContainer;
 
 public class GameManager : MonoBehaviour, IGameManagerService
@@ -16,6 +18,11 @@ public class GameManager : MonoBehaviour, IGameManagerService
     [SerializeField] private Transform _playerSpawnPoint;
     [SerializeField] private List<Transform> _enemySpawnPoints;
 
+    [Header("Skill System Dependecies")] 
+    [SerializeField] private SkillManager _skillManager;
+    [SerializeField] private Animator _skillPanelAnimator;
+    [SerializeField] private List<Image> _skillsEnabledFrames;
+    
     [Header("Player Dependencies")]
     [SerializeField] private FloatingJoystick _joyStick;
     [SerializeField] private Transform _cameraFollow;
@@ -25,6 +32,11 @@ public class GameManager : MonoBehaviour, IGameManagerService
     private IObjectResolver _objectResolver;
     private IObjectPoolService _objectPoolService;
     private CinemachineImpulseSource _cinemachineImpulseSource;
+    
+    private bool _isSkillPanelOpened = false;
+    private static readonly int Open = Animator.StringToHash("Open");
+    private static readonly int Close = Animator.StringToHash("Close");
+    
     public List<GameObject> CreatedEnemies => _createdEnemies;
 
     private void Awake()
@@ -129,6 +141,34 @@ public class GameManager : MonoBehaviour, IGameManagerService
     public void ExecuteCinemachineImpulse()
     {
         _cinemachineImpulseSource.GenerateImpulse(.25f);
+    }
+
+    public void ToggleSkillPanelActive()
+    {
+        if (_isSkillPanelOpened)
+        {
+            _skillPanelAnimator.SetTrigger(Close);
+        }
+        else
+        {
+            _skillPanelAnimator.SetTrigger(Open);
+        }
+
+        _isSkillPanelOpened = !_isSkillPanelOpened;
+    }
+
+    public void OnClickSkillButton(int skill)
+    {
+        if (_skillsEnabledFrames[skill].enabled)
+        {
+            _skillsEnabledFrames[skill].enabled = false;
+        }
+        else
+        {
+            _skillsEnabledFrames[skill].enabled = true;
+        }
+        
+        _skillManager.ToggleSkill(skill);
     }
 }
 

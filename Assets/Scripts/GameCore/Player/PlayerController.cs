@@ -92,5 +92,10 @@ namespace GameCore.Player
         {
             _healthController.TakeDamage(damage);
         }
+        
+        public void UpdateSkills()
+        {
+            
+        }
     }
 }
