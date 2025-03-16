@@ -159,15 +159,15 @@ public class GameManager : MonoBehaviour, IGameManagerService
 
     public void OnClickSkillButton(int skill)
     {
-        if (_skillsEnabledFrames[skill].enabled)
-        {
-            _skillsEnabledFrames[skill].enabled = false;
-        }
-        else
+        if (!_skillsEnabledFrames[skill].enabled)
         {
             _skillsEnabledFrames[skill].enabled = true;
         }
-        
+        else
+        {
+            _skillsEnabledFrames[skill].enabled = false;
+        }
+
         _skillManager.ToggleSkill(skill);
     }
 }

@@ -9,21 +9,57 @@ namespace Managers
     {
         public List<SkillData> skills;
         private bool isRageModeActive = false;
-        
+
+        private List<ISkillObserver> observers = new List<ISkillObserver>();
+
         public void ToggleSkill(int skill)
         {
             ToggleSkill(skills[skill]);
         }
-        
+
         private void ToggleSkill(SkillData skill)
         {
-            skill.isActive = !skill.isActive;
-            ApplySkillEffects();
-        }
-        
-        private void ApplySkillEffects()
-        {
+            if (skill.isActive)
+            {
+                skill.isActive = false;
+            }
+            else
+            {
+                skill.isActive = true;
+            }
             
+            NotifyObservers(skill);
+        }
+
+        public void AddObserver(ISkillObserver observer)
+        {
+            if (!observers.Contains(observer))
+            {
+                observers.Add(observer);
+            }
+        }
+
+        public void RemoveObserver(ISkillObserver observer)
+        {
+            if (observers.Contains(observer))
+            {
+                observers.Remove(observer);
+            }
+        }
+
+        private void NotifyObservers(SkillData skill)
+        {
+            foreach (var observer in observers)
+            {
+                if (skill.isActive)
+                {
+                    observer.OnSkillActivated(skill);
+                }
+                else
+                {
+                    observer.OnSkillDeactivated(skill);
+                }
+            }
         }
     }
 }

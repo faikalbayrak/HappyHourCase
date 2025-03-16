@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GameCore.Projectiles;
 using Interfaces;
 using Player;
@@ -11,6 +12,9 @@ namespace GameCore.Player
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private Transform _arrowFirePos;
+        [SerializeField] private Transform _arrowFirePos2;
+        [SerializeField] private Transform _arrowFirePos3;
+        [SerializeField] private Transform _arrowFirePos4;
         
         private IObjectResolver _objectResolver;
         private IGameManagerService _gameManagerService;
@@ -156,16 +160,33 @@ namespace GameCore.Player
                 Debug.LogWarning("No target to attack.");
                 return;
             }
-            
-            GameObject arrow = _objectPool.SpawnFromPool("Arrow", _arrowFirePos.position, _arrowFirePos.rotation);
-            if (arrow != null)
+
+            List<Transform> firePositions = new List<Transform> { _arrowFirePos };
+
+            if (_playerController.IsDoubleArrowActivated)
+            {
+                firePositions.Add(_arrowFirePos2);
+            }
+    
+            if (_playerController.IsRageActivated)
+            {
+                firePositions.Add(_arrowFirePos3);
+                firePositions.Add(_arrowFirePos4);
+            }
+
+            foreach (var firePos in firePositions)
+            {
+                SpawnAndLaunchArrow(firePos);
+            }
+        }
+
+        private void SpawnAndLaunchArrow(Transform firePos)
+        {
+            GameObject arrow = _objectPool.SpawnFromPool("Arrow", firePos.position, firePos.rotation);
+            if (arrow != null && _playerTargetingModule.CurrentTarget.gameObject.activeSelf)
             {
                 Arrow arrowScript = arrow.GetComponent<Arrow>();
-                if (arrowScript != null)
-                {
-                    if(_playerTargetingModule.CurrentTarget.gameObject.activeSelf)
-                        arrowScript.Launch(_playerTargetingModule.CurrentTarget.position + new Vector3(0,0.5f,0));
-                }
+                arrowScript.Launch(_playerTargetingModule.CurrentTarget.position + new Vector3(0, 0.5f, 0));
             }
         }
     }

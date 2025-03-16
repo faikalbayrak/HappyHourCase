@@ -610,6 +610,9 @@ Transform:
   - {fileID: 7952528761509440132}
   - {fileID: 2880500518066967339}
   - {fileID: 7498465968800680844}
+  - {fileID: 788958318258590210}
+  - {fileID: 4664829707302603261}
+  - {fileID: 954170580687203501}
   m_Father: {fileID: 8079307610428388298}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2049432299078570377
@@ -824,6 +827,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 4216383703765390274}
   _arrowFirePos: {fileID: 7498465968800680844}
+  _arrowFirePos2: {fileID: 788958318258590210}
+  _arrowFirePos3: {fileID: 4664829707302603261}
+  _arrowFirePos4: {fileID: 954170580687203501}
 --- !u!114 &6603581864261708233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2403,6 +2409,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6336009321346658022}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6651389473905272205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4664829707302603261}
+  m_Layer: 0
+  m_Name: ArrowFirePos3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4664829707302603261
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6651389473905272205}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.533034, y: 0.1553099, z: -0.76642466, w: -0.3230276}
+  m_LocalPosition: {x: 0.105, y: -0.3, z: -0.247}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4986840268888953205}
+  m_LocalEulerAnglesHint: {x: -6.102, y: -67.313, z: 138.357}
 --- !u!1 &6805583080993816102
 GameObject:
   m_ObjectHideFlags: 0
@@ -2672,6 +2709,37 @@ Transform:
   - {fileID: 5589568641199010457}
   m_Father: {fileID: 4549090483517193798}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7407311104344901229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 954170580687203501}
+  m_Layer: 0
+  m_Name: ArrowFirePos4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &954170580687203501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7407311104344901229}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.533034, y: 0.1553099, z: -0.76642466, w: -0.3230276}
+  m_LocalPosition: {x: 0.209, y: -0.189, z: 0.116}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4986840268888953205}
+  m_LocalEulerAnglesHint: {x: -6.102, y: -67.313, z: 138.357}
 --- !u!1 &7433304278919484162
 GameObject:
   m_ObjectHideFlags: 0
@@ -3118,6 +3186,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4312809566818697633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8284183338425792852
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 788958318258590210}
+  m_Layer: 0
+  m_Name: ArrowFirePos2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &788958318258590210
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8284183338425792852}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.533034, y: 0.1553099, z: -0.76642466, w: -0.3230276}
+  m_LocalPosition: {x: 0.108, y: -0.103, z: -0.335}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4986840268888953205}
+  m_LocalEulerAnglesHint: {x: -6.102, y: -67.313, z: 138.357}
 --- !u!1 &8316566442654312915
 GameObject:
   m_ObjectHideFlags: 0

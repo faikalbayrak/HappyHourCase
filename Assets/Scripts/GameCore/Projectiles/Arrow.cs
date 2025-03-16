@@ -70,7 +70,7 @@ namespace GameCore.Projectiles
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") || other.CompareTag("Projectile"))
                 return;
 
             HitEffect();

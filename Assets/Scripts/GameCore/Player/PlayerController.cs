@@ -1,12 +1,13 @@
 using Interfaces;
 using Player;
+using Scriptables;
 using UnityEngine;
 using Utilities;
 using VContainer;
 
 namespace GameCore.Player
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour, ISkillObserver
     {
         [SerializeField] private int _maxHealth = 100;
 
@@ -18,9 +19,22 @@ namespace GameCore.Player
         private HealthBarUI _healthBarUI;
         private LookAt _lookAt;
         private IGameManagerService _gameManagerService;
+        private ISkillManagerService _skillManagerService;
         private PlayerMovementModule _playerMovementModule;
         private PlayerAnimationModule _playerAnimationModule;
         private PlayerTargetingModule _playerTargetingModule;
+
+        private bool isDoubleArrowActivated = false;
+        private bool isBounceArrowActivated = false;
+        private bool isBurnDamageActivated = false;
+        private bool isAttackSpeedActivated = false;
+        private bool isRageActivated = false;
+
+        public bool IsDoubleArrowActivated => isDoubleArrowActivated;
+        public bool IsBounceArrowActivated => isBounceArrowActivated;
+        public bool IsBurnDamageActivated => isBurnDamageActivated;
+        public bool IsAttackSpeedActivated => isAttackSpeedActivated;
+        public bool IsRageActivated => isRageActivated;
         
         private void Awake()
         {
@@ -28,7 +42,6 @@ namespace GameCore.Player
             _healthBarUI = GetComponent<HealthBarUI>();
             _lookAt = GetComponentInChildren<LookAt>();
             
-            // Observer addition
             if (_healthBarUI != null)
             {
                 _healthController.AddObserver(_healthBarUI);
@@ -57,7 +70,10 @@ namespace GameCore.Player
             if (objectResolver != null)
             {
                 _gameManagerService = objectResolver.Resolve<IGameManagerService>();
-
+                _skillManagerService = objectResolver.Resolve<ISkillManagerService>();
+                
+                _skillManagerService.AddObserver(this);
+                
                 _lookAt.LookAtTransform = _gameManagerService.GetVirtualCamPos();
                 
                 _playerMovementModule.SetObjectResolver(objectResolver);
@@ -66,7 +82,7 @@ namespace GameCore.Player
             }
         }
         
-        public void SetAttackSpeedMultiplier(float multiplier, float duration = 0f)
+        private void SetAttackSpeedMultiplier(float multiplier, float duration = 0f)
         {
             if (duration > 0)
             {
@@ -92,10 +108,51 @@ namespace GameCore.Player
         {
             _healthController.TakeDamage(damage);
         }
-        
-        public void UpdateSkills()
+
+        public void OnSkillActivated(SkillData skill)
         {
-            
+            switch (skill.skillName)
+            {
+                case "DoubleArrow":
+                    isDoubleArrowActivated = true;
+                    break;
+                case "BounceDamage":
+                    isBounceArrowActivated = true;
+                    break;
+                case "BurnDamage":
+                    isBurnDamageActivated = true;
+                    break;
+                case "AttackSpeed":
+                    isAttackSpeedActivated = true;
+                    SetAttackSpeedMultiplier(2);
+                    break;
+                case "Rage":
+                    isRageActivated = true;
+                    break;
+            }
+        }
+
+        public void OnSkillDeactivated(SkillData skill)
+        {
+            switch (skill.skillName)
+            {
+                case "DoubleArrow":
+                    isDoubleArrowActivated = false;
+                    break;
+                case "BounceDamage":
+                    isBounceArrowActivated = false;
+                    break;
+                case "BurnDamage":
+                    isBurnDamageActivated = false;
+                    break;
+                case "AttackSpeed":
+                    isAttackSpeedActivated = false;
+                    SetAttackSpeedMultiplier(1);
+                    break;
+                case "Rage":
+                    isRageActivated = false;
+                    break;
+            }
         }
     }
 }
