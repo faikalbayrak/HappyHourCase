@@ -166,7 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   launchForce: 20
   gravityScale: 1
-  damage: 25
+  damage: 10
 --- !u!65 &9009781785461976980
 BoxCollider:
   m_ObjectHideFlags: 0

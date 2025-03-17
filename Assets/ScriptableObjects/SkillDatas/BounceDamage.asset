@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d60c673654425ad468e6796065989fa4, type: 3}
   m_Name: BounceDamage
   m_EditorClassIdentifier: 
+  skillType: 1
   skillName: BounceDamage
   skillIcon: {fileID: 21300000, guid: 4a42f50c320af18479e861735927732f, type: 3}
   isActive: 0

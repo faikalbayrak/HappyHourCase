@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Interfaces;
 using Scriptables;
@@ -11,6 +12,11 @@ namespace Managers
         private bool isRageModeActive = false;
 
         private List<ISkillObserver> observers = new List<ISkillObserver>();
+
+        private void Awake()
+        {
+            ResetSkills();
+        }
 
         public void ToggleSkill(int skill)
         {
@@ -59,6 +65,14 @@ namespace Managers
                 {
                     observer.OnSkillDeactivated(skill);
                 }
+            }
+        }
+
+        private void ResetSkills()
+        {
+            foreach (var skill in skills)
+            {
+                skill.isActive = false;
             }
         }
     }

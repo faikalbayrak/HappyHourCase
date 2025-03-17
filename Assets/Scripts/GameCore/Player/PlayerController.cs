@@ -111,46 +111,52 @@ namespace GameCore.Player
 
         public void OnSkillActivated(SkillData skill)
         {
-            switch (skill.skillName)
+            switch (skill.skillType)
             {
-                case "DoubleArrow":
+                case SkillData.SkillType.DoubleArrow:
                     isDoubleArrowActivated = true;
                     break;
-                case "BounceDamage":
+                case SkillData.SkillType.BounceDamage:
                     isBounceArrowActivated = true;
                     break;
-                case "BurnDamage":
+                case SkillData.SkillType.BurnDamage:
                     isBurnDamageActivated = true;
                     break;
-                case "AttackSpeed":
+                case SkillData.SkillType.AttackSpeed:
                     isAttackSpeedActivated = true;
                     SetAttackSpeedMultiplier(2);
                     break;
-                case "Rage":
+                case SkillData.SkillType.Rage:
                     isRageActivated = true;
+                    
+                    if(isAttackSpeedActivated)
+                        SetAttackSpeedMultiplier(4);
                     break;
             }
         }
 
         public void OnSkillDeactivated(SkillData skill)
         {
-            switch (skill.skillName)
+            switch (skill.skillType)
             {
-                case "DoubleArrow":
+                case SkillData.SkillType.DoubleArrow:
                     isDoubleArrowActivated = false;
                     break;
-                case "BounceDamage":
+                case SkillData.SkillType.BounceDamage:
                     isBounceArrowActivated = false;
                     break;
-                case "BurnDamage":
+                case SkillData.SkillType.BurnDamage:
                     isBurnDamageActivated = false;
                     break;
-                case "AttackSpeed":
+                case SkillData.SkillType.AttackSpeed:
                     isAttackSpeedActivated = false;
                     SetAttackSpeedMultiplier(1);
                     break;
-                case "Rage":
+                case SkillData.SkillType.Rage:
                     isRageActivated = false;
+                    
+                    if(isAttackSpeedActivated)
+                        SetAttackSpeedMultiplier(2);
                     break;
             }
         }

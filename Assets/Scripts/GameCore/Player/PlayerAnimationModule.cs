@@ -166,14 +166,14 @@ namespace GameCore.Player
             if (_playerController.IsDoubleArrowActivated)
             {
                 firePositions.Add(_arrowFirePos2);
+                
+                if (_playerController.IsRageActivated)
+                {
+                    firePositions.Add(_arrowFirePos3);
+                    firePositions.Add(_arrowFirePos4);
+                }
             }
-    
-            if (_playerController.IsRageActivated)
-            {
-                firePositions.Add(_arrowFirePos3);
-                firePositions.Add(_arrowFirePos4);
-            }
-
+            
             foreach (var firePos in firePositions)
             {
                 SpawnAndLaunchArrow(firePos);
@@ -186,8 +186,12 @@ namespace GameCore.Player
             if (arrow != null && _playerTargetingModule.CurrentTarget.gameObject.activeSelf)
             {
                 Arrow arrowScript = arrow.GetComponent<Arrow>();
+                Debug.LogError("IsBurned: " + _playerController.IsBurnDamageActivated);
+                Debug.LogError("IsBounced: " + _playerController.IsBounceArrowActivated);
+                Debug.LogError("IsRaged: " + _playerController.IsRageActivated);
                 arrowScript.IsBurned = _playerController.IsBurnDamageActivated;
                 arrowScript.IsBounced = _playerController.IsBounceArrowActivated;
+                arrowScript.IsRaged = _playerController.IsRageActivated;
                 arrowScript.Launch(_playerTargetingModule.CurrentTarget.position + new Vector3(0, 0.5f, 0));
             }
         }

@@ -20,6 +20,8 @@ namespace GameCore.Projectiles
         private bool _isLaunched = false;
         private bool _isBurned = false;
         private bool _isBounced = false;
+        private bool _isRaged = false;
+        private int _ragedBounceCount = 3;
         
         public float launchForce = 20f;
         public float gravityScale = 1f;
@@ -35,6 +37,18 @@ namespace GameCore.Projectiles
         {
             get => _isBounced;
             set => _isBounced = value;
+        }
+        
+        public bool IsRaged
+        {
+            get => _isRaged;
+            set => _isRaged = value;
+        }
+
+        public int RageBounceCount
+        {
+            get => _ragedBounceCount;
+            set => _ragedBounceCount = value;
         }
 
         private void Awake()
@@ -94,9 +108,10 @@ namespace GameCore.Projectiles
             {
                 enemy.TakeDamage(damage);
                 enemy.IsEnabledDot = _isBurned;
+                enemy.DotDurationMultiplier = _isRaged ? 2 : 1;
                 if (_isBounced)
                 {
-                    enemy.BounceArrow();
+                    enemy.BounceArrow(_isRaged,_ragedBounceCount);
                 }
             }
 
@@ -108,10 +123,11 @@ namespace GameCore.Projectiles
             _isLaunched = false;
             _isBurned = false;
             _isBounced = false;
+            _isRaged = false;
             _rigidbody.velocity = Vector3.zero;
             _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.useGravity = false;
-
+            _ragedBounceCount = 3;
             if (_objectPoolService != null)
             {
                 _objectPoolService.ReturnToPool("Arrow", gameObject);

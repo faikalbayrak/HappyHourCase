@@ -30,6 +30,7 @@ namespace GameCore.Enemy
         private bool _dependenciesInjected = false;
         private bool isEnabledDot = false;
         private float dotDuration = 3f;
+        private float dotDurationMultiplier = 1f;
         private float damageInterval = 1f;
         private float dotTimer = 0f;
         private float nextDamageTime = 0f;
@@ -39,6 +40,12 @@ namespace GameCore.Enemy
         {
             get => isEnabledDot;
             set => isEnabledDot = value;
+        }
+
+        public float DotDurationMultiplier
+        {
+            get => dotDurationMultiplier;
+            set => dotDurationMultiplier = value;
         }
         
         private void Awake()
@@ -66,11 +73,11 @@ namespace GameCore.Enemy
                 
                 if (dotTimer >= nextDamageTime)
                 {
-                    TakeDamage(15);
+                    TakeDamage(10);
                     nextDamageTime += damageInterval;
                 }
                 
-                if (dotTimer >= dotDuration)
+                if (dotTimer >= (dotDuration * dotDurationMultiplier))
                 {
                     isEnabledDot = false;
                     dotTimer = 0f;
@@ -122,6 +129,7 @@ namespace GameCore.Enemy
             isEnabledDotTemp = false;
             dotTimer = 0f;
             nextDamageTime = 0f;
+            dotDurationMultiplier = 1;
             burnDamageVfx.Stop();
         }
 
@@ -185,8 +193,14 @@ namespace GameCore.Enemy
             _objectPoolService.ReturnToPool("Explosive",explosiveVfx);
         }
         
-        public void BounceArrow()
+        public void BounceArrow(bool isRaged,int rageBounceCount)
         {
+            if (isRaged)
+            {
+                if(rageBounceCount == 0)
+                    return;
+            }
+            
             GameObject arrow = _objectPoolService.SpawnFromPool("Arrow", bounceArrowPos.position, bounceArrowPos.rotation);
     
             if (nearestEnemy != null && nearestEnemy.gameObject.activeSelf)
@@ -194,11 +208,15 @@ namespace GameCore.Enemy
                 if (arrow != null)
                 {
                     Arrow arrowScript = arrow.GetComponent<Arrow>();
-                    //arrowScript.IsBurned = _playerController.IsBurnDamageActivated;
+                    if (isRaged)
+                    {
+                        arrowScript.RageBounceCount = rageBounceCount - 1;
+                        arrowScript.IsBounced = true;
+                        arrowScript.IsRaged = true;
+                    }
                     arrowScript.Launch(nearestEnemy.position + new Vector3(0, 0.5f, 0));
                 }
             }
         }
-
     }
 }
