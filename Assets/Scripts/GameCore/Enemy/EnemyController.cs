@@ -23,8 +23,8 @@ namespace GameCore.Enemy
         
         private IObjectResolver _objectResolver;
         private IGameManagerService _gameManagerService;
-        private ISceneLoadService _sceneLoadService;
         private IObjectPoolService _objectPoolService;
+        private IAudioService _audioService;
         private Transform nearestEnemy;
         
         private bool _dependenciesInjected = false;
@@ -105,21 +105,14 @@ namespace GameCore.Enemy
             
             if (_objectResolver != null)
             {
-                _sceneLoadService = _objectResolver.Resolve<ISceneLoadService>();
                 _objectPoolService = _objectResolver.Resolve<IObjectPoolService>();
-                
-                _sceneLoadService.OnGameSceneLoaded += OnGameSceneLoaded;
+                _audioService = objectResolver.Resolve<IAudioService>();
             }
         }
 
         public void SetIGameManagerService(IGameManagerService gameManagerService)
         {
             _gameManagerService = gameManagerService;
-        }
-
-        private void OnGameSceneLoaded()
-        {
-            
         }
 
         public void OnObjectSpawn()
@@ -178,6 +171,7 @@ namespace GameCore.Enemy
 
         private async void Explosion()
         {
+            _audioService.PlayOneShot("Explosion");
             GameObject explosiveVfx = _objectPoolService.SpawnFromPool("Explosive", transform.position + new Vector3(0,0.5f,0), Quaternion.identity);
             
             _gameManagerService.ExecuteCinemachineImpulse();

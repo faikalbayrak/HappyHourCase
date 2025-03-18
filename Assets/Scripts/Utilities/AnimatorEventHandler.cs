@@ -12,5 +12,10 @@ namespace Utilities
         {
             _playerAnimationModule.AttackEvent();
         }
+
+        public void BowDrawEvent()
+        {
+            _playerAnimationModule.BowDrawEvent();
+        }
     }
 }

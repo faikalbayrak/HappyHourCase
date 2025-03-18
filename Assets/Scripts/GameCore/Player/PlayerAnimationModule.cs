@@ -19,6 +19,7 @@ namespace GameCore.Player
         private IObjectResolver _objectResolver;
         private IGameManagerService _gameManagerService;
         private IObjectPoolService _objectPool;
+        private IAudioService _audioService;
         private bool _dependenciesInjected = false;
         
         private PlayerController _playerController;
@@ -62,6 +63,7 @@ namespace GameCore.Player
             {
                 _gameManagerService = _objectResolver.Resolve<IGameManagerService>();
                 _objectPool = _objectResolver.Resolve<IObjectPoolService>();
+                _audioService = _objectResolver.Resolve<IAudioService>();
                 
                 if (_gameManagerService != null)
                 {
@@ -182,6 +184,7 @@ namespace GameCore.Player
 
         private void SpawnAndLaunchArrow(Transform firePos)
         {
+            _audioService.PlayOneShot("ThrowArrow");
             GameObject arrow = _objectPool.SpawnFromPool("Arrow", firePos.position, firePos.rotation);
             if (arrow != null && _playerTargetingModule.CurrentTarget.gameObject.activeSelf)
             {
@@ -194,6 +197,11 @@ namespace GameCore.Player
                 arrowScript.IsRaged = _playerController.IsRageActivated;
                 arrowScript.Launch(_playerTargetingModule.CurrentTarget.position + new Vector3(0, 0.5f, 0));
             }
+        }
+
+        public void BowDrawEvent()
+        {
+            _audioService.PlayOneShot("DrawBow");
         }
     }
 }

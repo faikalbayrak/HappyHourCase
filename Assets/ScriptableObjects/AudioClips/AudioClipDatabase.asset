@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60ce714d8dc0ab341a29f41166aa9f69, type: 3}
+  m_Name: AudioClipDatabase
+  m_EditorClassIdentifier: 
+  gameMusic: {fileID: 0}
+  audioClips:
+  - clipName: DrawBow
+    clip: {fileID: 8300000, guid: 3e40b315d194b524180fa3fd79c40e2c, type: 3}
+  - clipName: ThrowArrow
+    clip: {fileID: 8300000, guid: b45bf025daa9ad443825c7ed33eef8c1, type: 3}
+  - clipName: Explosion
+    clip: {fileID: 8300000, guid: e2615c8f610569344bc4c2d309c282f3, type: 3}

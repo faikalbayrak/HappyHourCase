@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour, IGameManagerService
     }
 
     [Inject]
-    public void Init(IObjectResolver objectResolver, IObjectPoolService objectPoolService)
+    public void Init(IObjectResolver objectResolver, IObjectPoolService objectPoolService,IAudioService audioService)
     {
         _objectResolver = objectResolver;
         _objectPoolService = objectPoolService;
@@ -54,6 +54,8 @@ public class GameManager : MonoBehaviour, IGameManagerService
         
         SpawnPlayer();
         SpawnEnemy(5);
+        
+        audioService.PlayMusic();
     }
 
     private void SpawnPlayer()

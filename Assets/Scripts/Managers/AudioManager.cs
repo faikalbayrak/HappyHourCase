@@ -72,11 +72,6 @@ namespace Managers
             
             if(!musicAudioSource.isPlaying)
                 musicAudioSource.Play();
-            else
-            {
-                musicAudioSource.volume = 0.2f;
-                oneShotAudioSource.volume = 0.2f;
-            }
         }
         
         public void StopMusic()
