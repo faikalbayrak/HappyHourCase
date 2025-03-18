@@ -189,9 +189,6 @@ namespace GameCore.Player
             if (arrow != null && _playerTargetingModule.CurrentTarget.gameObject.activeSelf)
             {
                 Arrow arrowScript = arrow.GetComponent<Arrow>();
-                Debug.LogError("IsBurned: " + _playerController.IsBurnDamageActivated);
-                Debug.LogError("IsBounced: " + _playerController.IsBounceArrowActivated);
-                Debug.LogError("IsRaged: " + _playerController.IsRageActivated);
                 arrowScript.IsBurned = _playerController.IsBurnDamageActivated;
                 arrowScript.IsBounced = _playerController.IsBounceArrowActivated;
                 arrowScript.IsRaged = _playerController.IsRageActivated;
